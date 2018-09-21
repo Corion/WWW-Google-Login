@@ -23,20 +23,20 @@ Net::Google::Login - log a mechanize object into Google
         user_agent => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.39 Safari/537.36+',
     );
     $mech->viewport_size({ width => 480, height => 640 });
-    
+
     $mech->get('https://keep.google.com');
-    
+
     my $login = Net::Google::Login->new(
         mech => $mech,
     );
-    
+
     if( $login->is_login_page()) {
         my $res = $login->login(
             user => 'a.u.thor@gmail.com',
             password => 'my-secret-password',
             headless => 1
         );
-    
+
         if( $res->wrong_password ) {
             # ?
         } elsif( $res->logged_in ) {
@@ -80,11 +80,11 @@ sub mask_headless( $self, $mech ) {
           @{ $_[0]->{params}->{args} };
     });
     $self->console($console);
-    
+
     $mech->block_urls(
         'https://fonts.gstatic.com/*',
     );
-    
+
     my $id = $mech->driver->send_message('Page.addScriptToEvaluateOnNewDocument', source => <<'JS' )->get;
 Object.defineProperty(navigator, 'webdriver', {
     get: () => false
@@ -132,13 +132,13 @@ sub login_headfull( $self, %options ) {
     my $user = $options{ user };
     my $password = $options{ password };
     my $logger = $self->logger;
-    
+
     my @email = $mech->wait_until_visible( selector => '//input[@type="email"]' );
-    
+
     my $username = $email[0]; # $mech->xpath('//input[@type="email"]', single => 1 );
     $username->set_attribute('value', $user);
     $mech->click({ xpath => '//*[@id="identifierNext"]' });
-    
+
     # Give time for password page to load
     $mech->wait_until_visible( selector => '//input[@type="password"]' );
     my $field = $mech->selector( '//input[@type="password"]', one => 1 );
@@ -158,6 +158,10 @@ sub login_headfull( $self, %options ) {
     $logger->info("Clicking Sign in button");
 
     $mech->click({ selector => '#passwordNext', single => 1 }); # for headful
+
+    Net::Google::Login::Status->new(
+        logged_in => 1
+    );
 }
 
 sub login_headless( $self, %options ) {
@@ -175,7 +179,7 @@ sub login_headless( $self, %options ) {
     print $email->get_attribute('name');
     print $email->get_attribute('outerHTML');
     $logger->info("Clicking and setting value on Email form field");
-    
+
     $mech->field( Email => $user );
     $mech->sleep(1);
     $logger->info("Clicking Next button");
@@ -210,6 +214,10 @@ sub login_headless( $self, %options ) {
     $mech->click({ xpath => '//*[@id = "signIn"]', single => 1 });    # for headless
     $mech->sleep(15);
     $mech->wait_until_invisible(xpath => '//*[contains(text(),"Loading...")]');
+
+    Net::Google::Login::Status->new(
+        logged_in => 1
+    );
 }
 
 =head2 C<< ->is_login_page >>
