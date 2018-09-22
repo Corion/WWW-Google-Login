@@ -132,7 +132,6 @@ sub login_headfull( $self, %options ) {
     my $user = $options{ user };
     my $password = $options{ password };
     my $logger = $self->logger;
-warn "Headfull login";
     if( ! $self->is_password_page_headfull ) {
         my @email = $mech->wait_until_visible( selector => '//input[@type="email"]' );
 
@@ -259,25 +258,16 @@ sub is_password_page_headless( $self ) {
 =cut
 
 sub is_login_page( $self ) {
-use Data::Dumper;
-    warn "Login headless:    " . $self->is_login_page_headless;
-    warn "Login headfull:    " . $self->is_login_page_headfull;
-    warn "Password headfull: " . $self->is_password_page_headfull;
-    warn "Password headless: " . $self->is_password_page_headless;
 
-    my @elements = $self->mech->xpath('//*[@id]');
-    for (@elements) {
-        warn join "\t", $_->get_attribute('id'), $_->get_attribute('type');
-    };
+    #my @elements = $self->mech->xpath('//*[@id]');
+    #for (@elements) {
+    #    warn join "\t", $_->get_attribute('id'), $_->get_attribute('type');
+    #};
 
-my $res =
        $self->is_login_page_headless
     || $self->is_login_page_headfull
     || $self->is_password_page_headfull
     || $self->is_password_page_headless
-    ;
-    warn "login? $res";
-    $res
 }
 
 =head2 C<< ->is_login_page_headless >>
