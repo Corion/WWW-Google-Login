@@ -1,0 +1,39 @@
+WWW::Google::Login - log a mechanize object into Google
+
+DESCRIPTION
+
+This module automates logging in a (Javascript capable) WWW::Mechanize
+object into Google. This is useful for scraping information from Google
+applications.
+
+Currently, this module only works in conjunction with L<WWW::Mechanize::Chrome>,
+but ideally it will evolve to not requiring Javascript or Chrome at all.
+
+
+INSTALLATION
+
+This is a Perl module distribution. It should be installed with whichever
+tool you use to manage your installation of Perl, e.g. any of
+
+  cpanm .
+  cpan  .
+  cpanp -i .
+
+Consult http://www.cpan.org/modules/INSTALL.html for further instruction.
+Should you wish to install this module manually, the procedure is
+
+  perl Makefile.PL
+  make
+  make test
+  make install
+
+
+
+
+
+
+
+
+
+
+
