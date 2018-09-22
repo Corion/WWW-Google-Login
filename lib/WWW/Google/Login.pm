@@ -132,12 +132,14 @@ sub login_headfull( $self, %options ) {
     my $user = $options{ user };
     my $password = $options{ password };
     my $logger = $self->logger;
+warn "Headfull login";
+    if( ! $self->is_password_page_headfull ) {
+        my @email = $mech->wait_until_visible( selector => '//input[@type="email"]' );
 
-    my @email = $mech->wait_until_visible( selector => '//input[@type="email"]' );
-
-    my $username = $email[0]; # $mech->xpath('//input[@type="email"]', single => 1 );
-    $username->set_attribute('value', $user);
-    $mech->click({ xpath => '//*[@id="identifierNext"]' });
+        my $username = $email[0]; # $mech->xpath('//input[@type="email"]', single => 1 );
+        $username->set_attribute('value', $user);
+        $mech->click({ xpath => '//*[@id="identifierNext"]' });
+    };
 
     # Give time for password page to load
     $mech->wait_until_visible( selector => '//input[@type="password"]' );
@@ -171,22 +173,21 @@ sub login_headless( $self, %options ) {
     my $password = $options{ password };
     my $logger = $self->logger;
 
-    # Click in Login Email form field
-    warn "Waiting for email entry field";
-    $mech->wait_until_visible( selector => '//input[@type="email"]' );
-    my $email = $mech->selector( '//input[@type="email"]', single => 1 );
-    print $email->get_attribute('id');
-    print $email->get_attribute('name');
-    print $email->get_attribute('outerHTML');
-    $logger->info("Clicking and setting value on Email form field");
+    if( ! $self->is_password_page_headless ) {
+        # Click in Login Email form field
+        warn "Waiting for email entry field";
+        $mech->wait_until_visible( selector => '//input[@type="email"]' );
+        my $email = $mech->selector( '//input[@type="email"]', single => 1 );
+        $logger->info("Clicking and setting value on Email form field");
 
-    $mech->field( Email => $user );
-    $mech->sleep(1);
-    $logger->info("Clicking Next button");
-    my $signIn_button = $mech->xpath( '//*[@name = "signIn"]', single => 1 );
-    my $signIn_class = $signIn_button->get_attribute('class');
-    #warn "Button class name is '$signIn_class'";
-    $mech->click_button( name => 'signIn' );
+        $mech->field( Email => $user );
+        $mech->sleep(1);
+        $logger->info("Clicking Next button");
+        my $signIn_button = $mech->xpath( '//*[@name = "signIn"]', single => 1 );
+        my $signIn_class = $signIn_button->get_attribute('class');
+        #warn "Button class name is '$signIn_class'";
+        $mech->click_button( name => 'signIn' );
+    };
 
     # Give time for password page to load
     #warn "Waiting for password field";
@@ -212,12 +213,35 @@ sub login_headless( $self, %options ) {
     # We should propably wait until a lot of the scripts have loaded...
 
     $mech->click({ xpath => '//*[@id = "signIn"]', single => 1 });    # for headless
+
     $mech->sleep(15);
     $mech->wait_until_invisible(xpath => '//*[contains(text(),"Loading...")]');
 
     Net::Google::Login::Status->new(
         logged_in => 1
     );
+}
+
+=head2 C<< ->is_password_page >>
+
+    if( $login->is_password_page ) {
+        $login->login( user => $user, password => $password );
+    };
+
+=cut
+
+sub is_password_page( $self ) {
+       $self->is_password_page_headless
+    || $self->is_password_page_headfull
+}
+
+sub is_password_page_headfull( $self ) {
+    #() = $self->mech->selector( '#passwordNext', maybe => 1 )
+    $self->mech->selector( '#hiddenEmail', maybe => 1 )
+}
+
+sub is_password_page_headless( $self ) {
+    $self->mech->xpath( '//input[@id="signIn"]', maybe => 1 )
 }
 
 =head2 C<< ->is_login_page >>
@@ -229,8 +253,25 @@ sub login_headless( $self, %options ) {
 =cut
 
 sub is_login_page( $self ) {
+use Data::Dumper;
+    warn "Login headless:    " . $self->is_login_page_headless;
+    warn "Login headfull:    " . $self->is_login_page_headfull;
+    warn "Password headfull: " . $self->is_password_page_headfull;
+    warn "Password headless: " . $self->is_password_page_headless;
+
+    my @elements = $self->mech->xpath('//*[@id]');
+    for (@elements) {
+        warn join "\t", $_->get_attribute('id'), $_->get_attribute('type');
+    };
+
+my $res =
        $self->is_login_page_headless
     || $self->is_login_page_headfull
+    || $self->is_password_page_headfull
+    || $self->is_password_page_headless
+    ;
+    warn "login? $res";
+    $res
 }
 
 =head2 C<< ->is_login_page_headless >>
@@ -238,7 +279,7 @@ sub is_login_page( $self ) {
 =cut
 
 sub is_login_page_headless( $self ) {
-    () = $self->mech->xpath( '//*[@name = "signIn"]', maybe => 1 )
+    $self->mech->xpath( '//*[@name = "signIn"]', maybe => 1 )
 }
 
 =head2 C<< ->is_login_page_headfull >>
@@ -246,7 +287,7 @@ sub is_login_page_headless( $self ) {
 =cut
 
 sub is_login_page_headfull( $self ) {
-    () = $self->mech->xpath( '//*[@id="identifierNext"]', maybe => 1 )
+    $self->mech->xpath( '//*[@id="identifierNext"]', maybe => 1 )
 }
 
 =head2 C<< ->login >>
@@ -261,6 +302,7 @@ sub is_login_page_headfull( $self ) {
 
 =cut
 
+# https://accounts.google.com/signin/v2/sl/pwd
 sub login( $self, %options ) {
     my $res;
     if( $self->is_login_page_headless ) {
@@ -277,7 +319,7 @@ sub click_text( $self, $text ) {
     my $mech = $self->mech;
     my $query = qq{//*[text() = "$text"]};
     my @nodes = $mech->wait_until_visible(xpath => $query, any => 1 );
-    sleep(15);
+    $mech->sleep(30);
     $mech->click( $nodes[0] );
     # Just so I can see that we clicke don that button
     warn "Clicked on '$text'";
