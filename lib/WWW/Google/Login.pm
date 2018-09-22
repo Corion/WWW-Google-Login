@@ -1,4 +1,4 @@
-package Net::Google::Login;
+package WWW::Google::Login;
 
 use strict;
 use Moo 2;
@@ -9,11 +9,11 @@ use Filter::signatures;
 use feature 'signatures';
 no warnings 'experimental::signatures';
 
-use Net::Google::Login::Status;
+use WWW::Google::Login::Status;
 
 =head1 NAME
 
-Net::Google::Login - log a mechanize object into Google
+WWW::Google::Login - log a mechanize object into Google
 
 =head1 SYNOPSIS
 
@@ -26,7 +26,7 @@ Net::Google::Login - log a mechanize object into Google
 
     $mech->get('https://keep.google.com');
 
-    my $login = Net::Google::Login->new(
+    my $login = WWW::Google::Login->new(
         mech => $mech,
     );
 
@@ -161,7 +161,7 @@ warn "Headfull login";
 
     $mech->click({ selector => '#passwordNext', single => 1 }); # for headful
 
-    Net::Google::Login::Status->new(
+    WWW::Google::Login::Status->new(
         logged_in => 1
     );
 }
@@ -217,7 +217,7 @@ sub login_headless( $self, %options ) {
     $mech->sleep(15);
     $mech->wait_until_invisible(xpath => '//*[contains(text(),"Loading...")]');
 
-    Net::Google::Login::Status->new(
+    WWW::Google::Login::Status->new(
         logged_in => 1
     );
 }

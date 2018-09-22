@@ -1,4 +1,4 @@
-package Net::Google::Login::Status;
+package WWW::Google::Login::Status;
 use strict;
 use Moo 2;
 
