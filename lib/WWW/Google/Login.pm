@@ -152,7 +152,6 @@ warn "Headfull login";
 
     my $password_html = $mech->selector('#password', single => 1 );
     $mech->click( $password_html ); # html "field" to enable the real field
-    #$mech->sleep(10);
     $mech->sendkeys( string => $password );
     $logger->info("Password entered into field");
 
@@ -160,6 +159,13 @@ warn "Headfull login";
     $logger->info("Clicking Sign in button");
 
     $mech->click({ selector => '#passwordNext', single => 1 }); # for headful
+
+    my @error = $mech->xpath( '//*[@aria="assertive"]', maybe => 1 );
+    if( @error ) {
+        return WWW::Google::Login::Status->new(
+            wrong_password => 1
+        );
+    };
 
     WWW::Google::Login::Status->new(
         logged_in => 1
