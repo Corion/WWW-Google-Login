@@ -311,21 +311,4 @@ sub login( $self, %options ) {
     $res
 }
 
-sub click_text( $self, $text ) {
-    my $mech = $self->mech;
-    my $query = qq{//*[text() = "$text"]};
-    my @nodes = $mech->wait_until_visible(xpath => $query, any => 1 );
-    $mech->sleep(30);
-    $mech->click( $nodes[0] );
-    # Just so I can see that we clicke don that button
-    warn "Clicked on '$text'";
-    $mech->sleep(15);
-}
-
-sub click_and_type( $self, $text, $input ) {
-    my $mech = $self->mech;
-    $self->click_text( $text );
-    $mech->sendkeys( string => $input );
-}
-
 1;
