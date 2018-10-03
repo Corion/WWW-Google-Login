@@ -159,8 +159,8 @@ sub login_headfull( $self, %options ) {
 
     $mech->click({ selector => '#passwordNext', single => 1 }); # for headful
 
-    my @error = $mech->xpath( '//*[@aria="assertive"]', maybe => 1 );
-    if( @error ) {
+    my $error = $mech->xpath( '//*[@aria="assertive"]', maybe => 1 );
+    if( $error ) {
         return WWW::Google::Login::Status->new(
             wrong_password => 1
         );

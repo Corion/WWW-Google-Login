@@ -45,7 +45,7 @@ my %module = (
 
     PREREQ_PM => {
         'Moo'                    => 2, # for some hashes-as-objects
-        'WWW::Mechanize::Chrome' => '0.21',
+        'WWW::Mechanize::Chrome' => '0.22',
         'Filter::signatures'     => '0.10',
 
     },
