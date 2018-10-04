@@ -21,6 +21,6 @@ Makefile$
 ^.releaserc
 ^.*.cmd
 ^chrome-versions
-^WWW-Mechanize-Chrome
+^WWW-Google-Login-.*
 ^frame-\d+.png
 ^demo/
