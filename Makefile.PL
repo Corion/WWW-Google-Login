@@ -47,6 +47,7 @@ my %module = (
         'Moo'                    => 2, # for some hashes-as-objects
         'WWW::Mechanize::Chrome' => '0.22',
         'Filter::signatures'     => '0.10',
+        'Log::Log4perl'          => 0,
 
     },
     TEST_REQUIRES => {
