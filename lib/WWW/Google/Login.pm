@@ -314,3 +314,46 @@ sub login( $self, %options ) {
 }
 
 1;
+
+=head1 FUTURE IMPROVEMENTS
+
+=head2 API usage
+
+Ideally, this module would switch away from screen scraping to directly
+automating the API below L<https://accounts.google.com/signin/v2/sl/pwd>.
+This would make it possible to switch away from L<WWW::Mechanize::Chrome>
+to a plain HTTP client like L<HTTP::Tiny> or L<WWW::Mechanize>.
+
+=head2 Two-factor authentication
+
+Two-factor authentication is not supported at all.
+
+=head1 SEE ALSO
+
+L<https://developers.google.com/my-business/reference/rest/> - Google Business API
+
+This allows a more direct administration of (business) accounts without screen
+scraping.
+
+=head1 REPOSITORY
+
+The public repository of this module is
+L<https://github.com/Corion/WWW-Google-Login>.
+
+=head1 SUPPORT
+
+The public support forum of this module is L<https://perlmonks.org/>.
+
+=head1 AUTHOR
+
+Max Maischein C<corion@cpan.org>
+
+=head1 COPYRIGHT (c)
+
+Copyright 2016-2018 by Max Maischein C<corion@cpan.org>.
+
+=head1 LICENSE
+
+This module is released under the same terms as Perl itself.
+
+=cut

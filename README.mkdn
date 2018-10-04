@@ -73,3 +73,44 @@ but ideally it will evolve to not requiring Javascript or Chrome at all.
     if( $res->logged_in ) {
         # yay
     }
+
+# FUTURE IMPROVEMENTS
+
+## API usage
+
+Ideally, this module would switch away from screen scraping to directly
+automating the API below [https://accounts.google.com/signin/v2/sl/pwd](https://accounts.google.com/signin/v2/sl/pwd).
+This would make it possible to switch away from [WWW::Mechanize::Chrome](https://metacpan.org/pod/WWW::Mechanize::Chrome)
+to a plain HTTP client like [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) or [WWW::Mechanize](https://metacpan.org/pod/WWW::Mechanize).
+
+## Two-factor authentication
+
+Two-factor authentication is not supported at all.
+
+# SEE ALSO
+
+[https://developers.google.com/my-business/reference/rest/](https://developers.google.com/my-business/reference/rest/) - Google Business API
+
+This allows a more direct administration of (business) accounts without screen
+scraping.
+
+# REPOSITORY
+
+The public repository of this module is
+[https://github.com/Corion/WWW-Google-Login](https://github.com/Corion/WWW-Google-Login).
+
+# SUPPORT
+
+The public support forum of this module is [https://perlmonks.org/](https://perlmonks.org/).
+
+# AUTHOR
+
+Max Maischein `corion@cpan.org`
+
+# COPYRIGHT (c)
+
+Copyright 2016-2018 by Max Maischein `corion@cpan.org`.
+
+# LICENSE
+
+This module is released under the same terms as Perl itself.
