@@ -11,6 +11,8 @@ no warnings 'experimental::signatures';
 
 use WWW::Google::Login::Status;
 
+our $VERSION = '0.01';
+
 =head1 NAME
 
 WWW::Google::Login - log a mechanize object into Google
